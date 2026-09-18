@@ -1,0 +1,35 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A1B2C3D4-1111-4222-8333-444455556666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaiYunBox", "src\BaiYunBox\BaiYunBox.csproj", "{B7A1F3C9-2D4E-4A5B-9C6D-8E7F6A5B4C3D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C1D2E3F4-2222-4333-9444-555566667777}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaiYunBox.Tests", "tests\BaiYunBox.Tests\BaiYunBox.Tests.csproj", "{E8B2A4D0-3E5F-4B6C-AD7E-9F80706B5D4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7A1F3C9-2D4E-4A5B-9C6D-8E7F6A5B4C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7A1F3C9-2D4E-4A5B-9C6D-8E7F6A5B4C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7A1F3C9-2D4E-4A5B-9C6D-8E7F6A5B4C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7A1F3C9-2D4E-4A5B-9C6D-8E7F6A5B4C3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8B2A4D0-3E5F-4B6C-AD7E-9F80706B5D4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8B2A4D0-3E5F-4B6C-AD7E-9F80706B5D4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8B2A4D0-3E5F-4B6C-AD7E-9F80706B5D4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8B2A4D0-3E5F-4B6C-AD7E-9F80706B5D4E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B7A1F3C9-2D4E-4A5B-9C6D-8E7F6A5B4C3D} = {A1B2C3D4-1111-4222-8333-444455556666}
+		{E8B2A4D0-3E5F-4B6C-AD7E-9F80706B5D4E} = {C1D2E3F4-2222-4333-9444-555566667777}
+	EndGlobalSection
+EndGlobal

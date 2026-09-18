@@ -1,0 +1,18 @@
+<Window x:Class="BaiYunBox.UI.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="输入" Width="420" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="{StaticResource WindowBackground}">
+    <StackPanel Margin="20">
+        <TextBlock x:Name="PromptText" Text="" FontSize="13" Foreground="{StaticResource ForegroundBrush}"
+                   TextWrapping="Wrap" Margin="0,0,0,12"/>
+        <TextBox x:Name="InputBox" Height="30" Padding="6,0" VerticalContentAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Content="取消" Width="80" Height="30" Margin="0,0,8,0" Click="Cancel_Click"/>
+            <Button Content="确定" Width="80" Height="30"
+                    Background="{StaticResource AccentBrush}" Foreground="White" BorderThickness="0"
+                    Click="Ok_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

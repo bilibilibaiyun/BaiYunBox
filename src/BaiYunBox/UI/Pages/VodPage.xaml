@@ -1,0 +1,150 @@
+<UserControl x:Class="BaiYunBox.UI.Pages.VodPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource WindowBackground}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="点播" FontSize="20" FontWeight="Bold" Foreground="{StaticResource ForegroundBrush}"/>
+
+        <!-- 工具栏 -->
+        <Grid Grid.Row="1" Margin="0,12,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="站点" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush}"/>
+            <ComboBox x:Name="SiteBox" Grid.Column="1" Height="28" Margin="12,0,0,0"
+                      SelectionChanged="Site_SelectionChanged"/>
+            <TextBlock Grid.Column="2" Text="搜索" VerticalAlignment="Center" Margin="16,0,0,0"
+                       Foreground="{StaticResource ForegroundBrush}"/>
+            <TextBox x:Name="SearchBox" Grid.Column="3" Height="28" Margin="8,0,0,0"
+                     VerticalContentAlignment="Center" Padding="6,0" KeyDown="SearchBox_KeyDown"/>
+            <Button Grid.Column="4" Content="搜索" Width="70" Height="28" Margin="8,0,0,0"
+                    Background="{StaticResource AccentBrush}" Foreground="White" BorderThickness="0"
+                    Click="Search_Click" Cursor="Hand"/>
+        </Grid>
+
+        <!-- 浏览视图 -->
+        <Grid x:Name="BrowseView" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ListBox x:Name="CategoryList" Grid.Column="0" BorderThickness="0" Background="Transparent"
+                     SelectionChanged="Category_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding TypeName}" FontSize="13" Padding="8,6"
+                                   Foreground="{StaticResource ForegroundBrush}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Grid Grid.Column="1" Margin="12,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ListBox x:Name="VodList" BorderThickness="0" Background="Transparent"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             MouseDoubleClick="VodList_DoubleClick">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="150" Margin="0,0,12,12" Background="{StaticResource PanelBackground}"
+                                        CornerRadius="8" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1"
+                                        Cursor="Hand">
+                                    <StackPanel>
+                                        <Border Width="150" Height="100" Background="#1A1D22" CornerRadius="8,8,0,0">
+                                            <Grid>
+                                                <Image Source="{Binding Pic}" Stretch="UniformToFill"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Remarks}" HorizontalAlignment="Right"
+                                                           VerticalAlignment="Top" Margin="0,4,4,0" FontSize="10"
+                                                           Foreground="White">
+                                                    <TextBlock.Background>
+                                                        <SolidColorBrush Color="#CC2563EB"/>
+                                                    </TextBlock.Background>
+                                                </TextBlock>
+                                            </Grid>
+                                        </Border>
+                                        <TextBlock Text="{Binding Name}" FontSize="12" Padding="8,6"
+                                                   Foreground="{StaticResource ForegroundBrush}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
+                    <Button Content="上一页" Width="80" Height="28" Click="PrevPage_Click"/>
+                    <TextBlock x:Name="PageText" Text="1" Margin="12,0" VerticalAlignment="Center"
+                               Foreground="{StaticResource ForegroundBrush}"/>
+                    <Button Content="下一页" Width="80" Height="28" Click="NextPage_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- 详情视图 -->
+        <Grid x:Name="DetailView" Grid.Row="2" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Content="← 返回" Width="80" Height="30" Click="Back_Click" Cursor="Hand"/>
+                <TextBlock x:Name="DetailTitle" FontSize="18" FontWeight="Bold" Margin="16,0,0,0"
+                           VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,0">
+                <TextBlock Text="线路" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush}"/>
+                <ComboBox x:Name="LineBox" Width="200" Height="28" Margin="12,0,0,0"
+                          SelectionChanged="Line_SelectionChanged"/>
+            </StackPanel>
+
+            <TextBlock Grid.Row="2" x:Name="DetailInfo" FontSize="12" Margin="0,10,0,8"
+                       Foreground="{StaticResource SecondaryForegroundBrush}" TextWrapping="Wrap"/>
+
+            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+                <ListBox x:Name="EpisodeList" BorderThickness="0" Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Title}" Width="Auto" MinWidth="64" Height="32"
+                                    Margin="0,0,8,8" Padding="10,0" FontSize="12"
+                                    Background="{StaticResource PanelBackground}"
+                                    Foreground="{StaticResource ForegroundBrush}"
+                                    BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1"
+                                    Tag="{Binding}" Click="Episode_Click" Cursor="Hand"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

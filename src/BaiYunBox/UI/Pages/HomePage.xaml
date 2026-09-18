@@ -1,0 +1,50 @@
+<UserControl x:Class="BaiYunBox.UI.Pages.HomePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource WindowBackground}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="继续观看" FontSize="20" FontWeight="Bold"
+                   Foreground="{StaticResource ForegroundBrush}"/>
+        <TextBlock Grid.Row="1" Text="最近播放的记录，点击即可断点续播" FontSize="12"
+                   Foreground="{StaticResource SecondaryForegroundBrush}" Margin="0,4,0,12"/>
+
+        <ListBox Grid.Row="2" x:Name="HistoryList" BorderThickness="0" Background="Transparent"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 MouseDoubleClick="HistoryList_DoubleClick">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="{StaticResource PanelBackground}" CornerRadius="8"
+                            BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1"
+                            Padding="14,10" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold"
+                                           Foreground="{StaticResource ForegroundBrush}" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Source}" FontSize="11"
+                                           Foreground="{StaticResource SecondaryForegroundBrush}" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock FontSize="11" Foreground="{StaticResource SecondaryForegroundBrush}"
+                                           Text="{Binding PositionDisplay}" VerticalAlignment="Center"/>
+                                <Button Content="▶" Width="44" Height="30" Margin="12,0,0,0"
+                                        Background="{StaticResource AccentBrush}" Foreground="White"
+                                        BorderThickness="0" FontSize="12" Tag="{Binding}"
+                                        Click="Play_Click" Cursor="Hand"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

@@ -1,0 +1,22 @@
+# 构建产物
+bin/
+obj/
+artifacts/
+publish/
+
+# 本地工具链缓存（下载脚本 .tools/*.py 保留提交）
+.tools/dotnet-cli-home/
+.tools/nuget-packages/
+.tools/7zr.exe
+.tools/_assets.txt
+*.user
+*.suo
+
+# 引擎二进制（大文件，通过脚本下载，见 .tools/fetch_engines.py）
+engine/
+*.7z
+*.zip
+
+# 系统文件
+Thumbs.db
+.DS_Store

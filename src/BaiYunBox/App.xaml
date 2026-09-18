@@ -1,0 +1,14 @@
+<Application x:Class="BaiYunBox.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <!-- 全局主题资源（日间默认） -->
+        <SolidColorBrush x:Key="WindowBackground" Color="#F5F6F8" />
+        <SolidColorBrush x:Key="PanelBackground" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="ForegroundBrush" Color="#1B1F24" />
+        <SolidColorBrush x:Key="SecondaryForegroundBrush" Color="#6B7280" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#2563EB" />
+        <SolidColorBrush x:Key="BorderBrushColor" Color="#E5E7EB" />
+    </Application.Resources>
+</Application>
