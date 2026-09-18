@@ -2,7 +2,7 @@
 ; 由 007 生成 — v1.0.0
 
 #define MyAppName "BaiYun Box"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppExeName "BaiYunBox.exe"
 #define MyAppPublisher "BaiYun"
 #define MyAppURL "https://github.com/bilibilibaiyun"
@@ -31,7 +31,7 @@ PrivilegesRequiredOverridesAllowed=dialog commandline
 CloseApplications=yes
 RestartApplications=no
 OutputDir=..\artifacts
-OutputBaseFilename=BaiYunBox_1.0.0_Setup
+OutputBaseFilename=BaiYunBox_1.0.1_Setup
 
 [Languages]
 Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"

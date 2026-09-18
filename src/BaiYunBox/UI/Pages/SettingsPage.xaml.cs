@@ -12,13 +12,6 @@ public partial class SettingsPage : UserControl
     public SettingsPage()
     {
         InitializeComponent();
-
-        // 转录模型
-        foreach (var m in TranscriptionService.AvailableModels)
-        {
-            ModelBox.Items.Add(new ComboBoxItem { Content = m.Desc, Tag = m.File });
-        }
-
         Loaded += (_, _) => LoadSettings();
     }
 
@@ -38,43 +31,10 @@ public partial class SettingsPage : UserControl
         AutoSwitchBox.IsChecked = s.AutoSwitchSource;
         PreloadBox.IsChecked = s.PreloadNext;
 
-        // 模型选择
-        for (int i = 0; i < ModelBox.Items.Count; i++)
-        {
-            if (ModelBox.Items[i] is ComboBoxItem item && (string)item.Tag == s.WhisperModel)
-            {
-                ModelBox.SelectedIndex = i;
-                break;
-            }
-        }
-        if (ModelBox.SelectedIndex < 0) ModelBox.SelectedIndex = 0;
-
-        // 语言选择
-        for (int i = 0; i < LangBox.Items.Count; i++)
-        {
-            if (LangBox.Items[i] is ComboBoxItem item && (string)item.Tag == s.TranscriptLanguage)
-            {
-                LangBox.SelectedIndex = i;
-                break;
-            }
-        }
-        if (LangBox.SelectedIndex < 0) LangBox.SelectedIndex = 0;
-
         // 主题
         ThemeBox.SelectedIndex = s.Theme == "dark" ? 1 : 0;
 
-        UpdateModelStatus();
         _loaded = true;
-    }
-
-    private void UpdateModelStatus()
-    {
-        var model = AppServices.Settings.WhisperModel;
-        var ready = AppServices.Transcription.IsModelReady(model);
-        var engine = AppServices.Transcription.IsEngineReady();
-        ModelStatusText.Text = engine
-            ? (ready ? $"模型 {model} 已就绪。" : $"模型 {model} 未下载，转录时会自动下载。")
-            : "转录引擎 whisper-cli.exe 缺失（安装包损坏？）。";
     }
 
     // ---------- 点播源 ----------
@@ -213,19 +173,6 @@ public partial class SettingsPage : UserControl
         AppServices.Settings.AutoSwitchSource = AutoSwitchBox.IsChecked == true;
         AppServices.Settings.PreloadNext = PreloadBox.IsChecked == true;
         AppServices.SaveSettings();
-    }
-
-    // ---------- 转录设置 ----------
-
-    private void TranscriptSetting_Changed(object sender, SelectionChangedEventArgs e)
-    {
-        if (!_loaded) return;
-        if (ModelBox.SelectedItem is ComboBoxItem modelItem)
-            AppServices.Settings.WhisperModel = (string)modelItem.Tag;
-        if (LangBox.SelectedItem is ComboBoxItem langItem)
-            AppServices.Settings.TranscriptLanguage = (string)langItem.Tag;
-        AppServices.SaveSettings();
-        UpdateModelStatus();
     }
 
     // ---------- 主题 ----------

@@ -18,7 +18,6 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="RSS" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush}"/>
             <TextBox x:Name="RssBox" Grid.Column="1" Height="28" Margin="8,0,0,0" Padding="6,0"
@@ -28,9 +27,6 @@
                     Click="ImportRss_Click" Cursor="Hand"/>
             <Button Grid.Column="3" Content="搜索节目" Width="80" Height="28" Margin="8,0,0,0"
                     Click="Search_Click" Cursor="Hand"/>
-            <Button Grid.Column="4" Content="导入本地音频" Width="110" Height="28" Margin="8,0,0,0"
-                    Background="#16A34A" Foreground="White" BorderThickness="0"
-                    Click="ImportLocal_Click" Cursor="Hand"/>
         </Grid>
 
         <!-- 主体 -->
@@ -97,20 +93,6 @@
                                             <Button Content="下载" Width="52" Height="26" Margin="4,0"
                                                     BorderThickness="1" FontSize="11" Tag="{Binding}"
                                                     Click="DownloadEpisode_Click" Cursor="Hand"/>
-                                            <Button Content="转录" Width="52" Height="26" Margin="4,0"
-                                                    BorderThickness="1" FontSize="11" Tag="{Binding}"
-                                                    Click="TranscribeEpisode_Click" Cursor="Hand">
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding LocalPath}" Value="{x:Null}">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
                                             <Button Content="订阅" Width="52" Height="26" Margin="4,0"
                                                     Background="#16A34A" Foreground="White" BorderThickness="0"
                                                     FontSize="11" Tag="{Binding}" Click="SubscribeResult_Click" Cursor="Hand">
@@ -134,15 +116,5 @@
                 </ScrollViewer>
             </Grid>
         </Grid>
-
-        <!-- 转录进度/状态条 -->
-        <Border x:Name="TranscribeBar" Grid.Row="2" Visibility="Collapsed"
-                Background="{StaticResource PanelBackground}" BorderBrush="{StaticResource BorderBrushColor}"
-                BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,12,0,0" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <StackPanel>
-                <TextBlock x:Name="TranscribeStatus" FontSize="12" Foreground="{StaticResource ForegroundBrush}"/>
-                <ProgressBar x:Name="TranscribeProgress" Height="8" Width="300" Margin="0,6,0,0"/>
-            </StackPanel>
-        </Border>
     </Grid>
 </UserControl>

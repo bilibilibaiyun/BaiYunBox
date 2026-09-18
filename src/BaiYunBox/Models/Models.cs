@@ -173,8 +173,6 @@ public sealed class PodcastEpisode
     public long? DurationSeconds { get; set; }
     /// <summary>本地下载路径（下载后填充）。</summary>
     public string? LocalPath { get; set; }
-    /// <summary>转录文本（转录后填充）。</summary>
-    public string? Transcript { get; set; }
     /// <summary>搜索结果的订阅 feed URL（搜索结果时填充，普通剧集为 null）。</summary>
     [JsonIgnore]
     public string? SubscribeFeedUrl { get; set; }

@@ -143,4 +143,7 @@ public static class MpvApi
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void WakeupCallback(IntPtr d);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern bool SetDllDirectory(string lpPathName);
 }

@@ -12,9 +12,9 @@
     <PublishSingleFile>false</PublishSingleFile>
     <AssemblyName>BaiYunBox</AssemblyName>
     <RootNamespace>BaiYunBox</RootNamespace>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <SatelliteResourceLanguages>zh-CN;en-US</SatelliteResourceLanguages>
@@ -28,19 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- 内置 libmpv 引擎（mpv-2.dll / libmpv-2.dll）与 whisper.cpp 引擎（whisper-cli.exe）。
-         用 Always 而非 PreserveNewest：引擎文件的修改时间是构建/下载时间，PreserveNewest
-         会误判旧文件「更新」而不复制，导致发布/安装包残留旧引擎。 -->
+    <!-- 内置 libmpv 引擎（libmpv-2.dll）。用 Always 而非 PreserveNewest：引擎文件的修改
+         时间是构建/下载时间，PreserveNewest 会误判旧文件「更新」而不复制，导致发布/安装包残留旧引擎。 -->
     <None Include="..\..\engine\mpv\**\*"
           Link="engine\mpv\%(RecursiveDir)%(Filename)%(Extension)"
-          CopyToOutputDirectory="Always"
-          CopyToPublishDirectory="Always" />
-    <None Include="..\..\engine\whisper\**\*"
-          Link="engine\whisper\%(RecursiveDir)%(Filename)%(Extension)"
-          CopyToOutputDirectory="Always"
-          CopyToPublishDirectory="Always" />
-    <None Include="..\..\engine\ffmpeg\**\*"
-          Link="engine\ffmpeg\%(RecursiveDir)%(Filename)%(Extension)"
           CopyToOutputDirectory="Always"
           CopyToPublishDirectory="Always" />
   </ItemGroup>

@@ -34,6 +34,9 @@ public sealed class MpvPlayer : IDisposable
     {
         if (IsInitialized) return;
 
+        // 将 libmpv 所在目录加入 DLL 搜索路径（engine/mpv/ 在子目录，默认 DllImport 找不到）
+        MpvApi.SetDllDirectory(Core.AppPaths.MpvDirectory);
+
         _handle = MpvApi.mpv_create();
         if (_handle == IntPtr.Zero)
             throw new InvalidOperationException("mpv_create 失败");

@@ -29,12 +29,6 @@ public sealed class AppSettings
     /// <summary>下一集预载。</summary>
     public bool PreloadNext { get; set; }
 
-    /// <summary>whisper 转录模型文件名（如 ggml-base.bin / ggml-small.bin）。</summary>
-    public string WhisperModel { get; set; } = "ggml-base.bin";
-
-    /// <summary>转录语言（auto / zh / en / ja ...）。</summary>
-    public string TranscriptLanguage { get; set; } = "auto";
-
     /// <summary>界面语言 zh-CN / en-US。</summary>
     public string Language { get; set; } = "zh-CN";
 

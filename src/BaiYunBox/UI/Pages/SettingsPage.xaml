@@ -82,29 +82,6 @@
                 </StackPanel>
             </GroupBox>
 
-            <!-- 转录设置 -->
-            <GroupBox Header="本地转录（whisper.cpp）" Margin="0,12,0,0" Padding="12">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                        <TextBlock Text="模型" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush}"/>
-                        <ComboBox x:Name="ModelBox" Width="220" Height="28" Margin="12,0,0,0"
-                                  SelectionChanged="TranscriptSetting_Changed"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBlock Text="语言" VerticalAlignment="Center" Foreground="{StaticResource ForegroundBrush}"/>
-                        <ComboBox x:Name="LangBox" Width="140" Height="28" Margin="12,0,0,0"
-                                  SelectionChanged="TranscriptSetting_Changed">
-                            <ComboBoxItem Content="自动检测" Tag="auto"/>
-                            <ComboBoxItem Content="中文" Tag="zh"/>
-                            <ComboBoxItem Content="英文" Tag="en"/>
-                            <ComboBoxItem Content="日文" Tag="ja"/>
-                        </ComboBox>
-                    </StackPanel>
-                    <TextBlock x:Name="ModelStatusText" FontSize="11" Foreground="{StaticResource SecondaryForegroundBrush}"
-                               Margin="0,10,0,0" TextWrapping="Wrap"/>
-                </StackPanel>
-            </GroupBox>
-
             <!-- 界面 -->
             <GroupBox Header="界面" Margin="0,12,0,0" Padding="12">
                 <StackPanel Orientation="Horizontal">

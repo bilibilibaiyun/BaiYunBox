@@ -22,26 +22,11 @@ public static class AppPaths
     /// <summary>配置目录。</summary>
     public static string ConfigDirectory => DataDirectory;
 
-    /// <summary>whisper 转录模型目录。</summary>
-    public static string ModelDirectory => Path.Combine(DataDirectory, "models");
-
     /// <summary>播客下载目录。</summary>
     public static string PodcastDirectory => Path.Combine(DataDirectory, "podcasts");
 
-    /// <summary>转录结果目录。</summary>
-    public static string TranscriptDirectory => Path.Combine(DataDirectory, "transcripts");
-
     /// <summary>libmpv 引擎目录（随包内置）。</summary>
     public static string MpvDirectory => Path.Combine(AppDirectory, "engine", "mpv");
-
-    /// <summary>whisper.cpp 引擎目录（随包内置）。</summary>
-    public static string WhisperDirectory => Path.Combine(AppDirectory, "engine", "whisper");
-
-    /// <summary>ffmpeg 引擎目录（随包内置，用于音频格式预处理）。</summary>
-    public static string FfmpegDirectory => Path.Combine(AppDirectory, "engine", "ffmpeg");
-
-    /// <summary>ffmpeg.exe 全路径。</summary>
-    public static string FfmpegPath => Path.Combine(FfmpegDirectory, "ffmpeg.exe");
 
     /// <summary>libmpv DLL 全路径。</summary>
     public static string MpvDllPath
@@ -55,9 +40,6 @@ public static class AppPaths
             return libmpv;
         }
     }
-
-    /// <summary>whisper-cli.exe 全路径。</summary>
-    public static string WhisperCliPath => Path.Combine(WhisperDirectory, "whisper-cli.exe");
 
     /// <summary>处理 --data-dir 命令行参数。</summary>
     public static void ApplyCommandLine(string[] args)
@@ -88,7 +70,7 @@ public static class AppPaths
     /// <summary>确保数据相关目录存在。</summary>
     public static void EnsureDirectories()
     {
-        foreach (var dir in new[] { DataDirectory, LogDirectory, ConfigDirectory, ModelDirectory, PodcastDirectory, TranscriptDirectory })
+        foreach (var dir in new[] { DataDirectory, LogDirectory, ConfigDirectory, PodcastDirectory })
         {
             Directory.CreateDirectory(dir);
         }

@@ -12,7 +12,6 @@ public static class AppServices
     public static LiveService Live { get; } = new();
     public static MediaLibraryService Media { get; } = new();
     public static PodcastService Podcast { get; } = new();
-    public static TranscriptionService Transcription { get; } = new();
     public static HistoryService History { get; } = new();
 
     static AppServices()
