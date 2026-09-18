@@ -93,6 +93,19 @@
                     </ComboBox>
                 </StackPanel>
             </GroupBox>
+
+            <!-- 关于 / 检查更新 -->
+            <GroupBox Header="关于" Margin="0,12,0,0" Padding="12">
+                <StackPanel>
+                    <TextBlock x:Name="VersionText" FontSize="12" Foreground="{StaticResource ForegroundBrush}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button Content="检查更新" Width="90" Height="30" Click="CheckUpdate_Click"
+                                Background="{StaticResource AccentBrush}" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                        <TextBlock x:Name="UpdateStatusText" FontSize="12" Margin="12,0,0,0" VerticalAlignment="Center"
+                                   Foreground="{StaticResource SecondaryForegroundBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -18,19 +18,19 @@ public partial class MainWindow : Window
         if (NavList.SelectedItem is not ListBoxItem item) return;
         var tag = item.Tag as string ?? "0";
 
-        HomePageControl.Visibility = tag == "0" ? Visibility.Visible : Visibility.Collapsed;
-        VodPageControl.Visibility = tag == "1" ? Visibility.Visible : Visibility.Collapsed;
-        LivePageControl.Visibility = tag == "2" ? Visibility.Visible : Visibility.Collapsed;
-        LibraryPageControl.Visibility = tag == "3" ? Visibility.Visible : Visibility.Collapsed;
-        PodcastPageControl.Visibility = tag == "4" ? Visibility.Visible : Visibility.Collapsed;
+        VodPageControl.Visibility = tag == "0" ? Visibility.Visible : Visibility.Collapsed;
+        LivePageControl.Visibility = tag == "1" ? Visibility.Visible : Visibility.Collapsed;
+        LibraryPageControl.Visibility = tag == "2" ? Visibility.Visible : Visibility.Collapsed;
+        PodcastPageControl.Visibility = tag == "3" ? Visibility.Visible : Visibility.Collapsed;
+        HomePageControl.Visibility = tag == "4" ? Visibility.Visible : Visibility.Collapsed;
         SettingsPageControl.Visibility = tag == "5" ? Visibility.Visible : Visibility.Collapsed;
 
         // 切换到对应页时触发刷新
         switch (tag)
         {
-            case "0": HomePageControl.Refresh(); break;
-            case "3": LibraryPageControl.RefreshIfNeeded(); break;
-            case "4": PodcastPageControl.RefreshIfNeeded(); break;
+            case "4": HomePageControl.Refresh(); break;
+            case "2": LibraryPageControl.RefreshIfNeeded(); break;
+            case "3": PodcastPageControl.RefreshIfNeeded(); break;
         }
     }
 

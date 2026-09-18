@@ -34,7 +34,57 @@ public partial class SettingsPage : UserControl
         // 主题
         ThemeBox.SelectedIndex = s.Theme == "dark" ? 1 : 0;
 
+        // 版本号
+        VersionText.Text = $"当前版本：v{BaiYunBox.Core.AppPaths.AppVersion}";
+
         _loaded = true;
+    }
+
+    // ---------- 检查更新 ----------
+
+    private async void CheckUpdate_Click(object sender, RoutedEventArgs e)
+    {
+        UpdateStatusText.Text = "检查中…";
+        var updater = new UpdateService();
+        var info = await updater.CheckAsync();
+
+        if (info == null)
+        {
+            UpdateStatusText.Text = "已是最新版本。";
+            return;
+        }
+
+        UpdateStatusText.Text = $"发现新版本 v{info.Version}";
+        var result = MessageBox.Show(
+            $"发现新版本：{info.Title}\n\n{TrimNotes(info.Notes)}\n\n是否前往下载？",
+            "检查更新", MessageBoxButton.YesNo, MessageBoxImage.Information);
+        if (result == MessageBoxResult.Yes)
+        {
+            OpenUrl(info.Url);
+        }
+    }
+
+    private static string TrimNotes(string notes)
+    {
+        if (string.IsNullOrWhiteSpace(notes)) return "";
+        if (notes.Length > 400) notes = notes[..400] + "…";
+        return notes;
+    }
+
+    private static void OpenUrl(string url)
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true,
+            });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("打开链接失败：" + ex.Message, "BaiYun Box", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     // ---------- 点播源 ----------

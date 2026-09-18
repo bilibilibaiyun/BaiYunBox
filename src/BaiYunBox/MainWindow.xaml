@@ -26,11 +26,11 @@
 
                 <ListBox x:Name="NavList" DockPanel.Dock="Top" BorderThickness="0"
                          Background="Transparent" SelectionChanged="Nav_SelectionChanged">
-                    <ListBoxItem Content="🏠 首页" Tag="0" Padding="12,10"/>
-                    <ListBoxItem Content="🎬 点播" Tag="1" Padding="12,10"/>
-                    <ListBoxItem Content="📺 直播" Tag="2" Padding="12,10"/>
-                    <ListBoxItem Content="📁 媒体库" Tag="3" Padding="12,10"/>
-                    <ListBoxItem Content="🎙 播客" Tag="4" Padding="12,10"/>
+                    <ListBoxItem Content="🎬 首页" Tag="0" Padding="12,10"/>
+                    <ListBoxItem Content="📺 直播" Tag="1" Padding="12,10"/>
+                    <ListBoxItem Content="📁 媒体库" Tag="2" Padding="12,10"/>
+                    <ListBoxItem Content="🎙 播客" Tag="3" Padding="12,10"/>
+                    <ListBoxItem Content="🕘 历史" Tag="4" Padding="12,10"/>
                     <ListBoxItem Content="⚙ 设置" Tag="5" Padding="12,10"/>
                 </ListBox>
             </DockPanel>
@@ -38,11 +38,11 @@
 
         <!-- 右侧内容区 -->
         <Grid Grid.Column="1">
-            <pages:HomePage x:Name="HomePageControl" Visibility="Visible"/>
-            <pages:VodPage x:Name="VodPageControl" Visibility="Collapsed"/>
+            <pages:VodPage x:Name="VodPageControl" Visibility="Visible"/>
             <pages:LivePage x:Name="LivePageControl" Visibility="Collapsed"/>
             <pages:LibraryPage x:Name="LibraryPageControl" Visibility="Collapsed"/>
             <pages:PodcastPage x:Name="PodcastPageControl" Visibility="Collapsed"/>
+            <pages:HomePage x:Name="HomePageControl" Visibility="Collapsed"/>
             <pages:SettingsPage x:Name="SettingsPageControl" Visibility="Collapsed"/>
         </Grid>
     </Grid>
