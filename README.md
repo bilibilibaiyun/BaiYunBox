@@ -8,22 +8,23 @@ BaiYun Box 兼容 TVBox 单线路源、FongMi 多线路源（CMS JSON）与 M3U 
 
 - **点播 + 直播**：一套界面同时支持视频点播与 IPTV 直播，分类 / 分组 / 搜索齐全。
 - **TVBox 兼容**：支持 TVBox 单线路源（顶层 `sites`）与 FongMi 多线路源（`storeHouse` → 子源），CMS JSON API 分类/列表/搜索/详情。
+- **JS 爬虫源**：支持 `type=3` 的 dr_py / FongMi js0 声明式爬虫（`var rule`），内置 Jint 引擎本地执行，覆盖道长 js 源等一大类安卓 TVBox 源。
 - **多线路切换**：点播详情页按线路切换剧集列表。
 - **本地媒体库**：添加本地目录递归扫描视频，同名海报自动识别，断点续播。
 - **播客播放**：RSS / Apple Podcasts 搜索与订阅、剧集下载、在线/本地播放。
 - **断点续播**：自动记录观看进度，首页一键接着看。
 - **播放控制**：播放/暂停、进度拖动、音量、倍速（0.5×–2.0×）、键盘快捷键（空格暂停、←/→ 快退快进、Esc 退出）。
-- **完全离线**：识别与播放不离开本机（除播客/点播源本身需要联网访问外，无任何遥测、无账号）。
+- **完全离线**：播放与识别不离开本机（除播客/点播源本身需要联网访问外，无任何遥测、无账号）。
 
 ## 📡 支持的源
 
 | 类型 | 结构 | 说明 |
 |---|---|---|
-| TVBox 单线路源 | 顶层 `sites` 数组 | `type=1` CMS JSON |
+| TVBox 单线路源 | 顶层 `sites` 数组 | `type=1` CMS JSON、`type=3` JS 爬虫 |
 | FongMi 多线路源 | `storeHouse` → 子源 | 点播页可切换线路 |
 | 直播源 | M3U / M3U8 / TXT | 支持 URL 或本地文件路径 |
 
-> 暂不支持 `type=3` JS 爬虫（js0 / drpy）与 `csp_` JAR 站点，后续按需补充。
+> 不支持 `csp_` JAR 站点（安卓 dex + 加固，Windows 无法运行）与 `type=0` xpath 站点。JS 爬虫支持 dr_py / FongMi js0 的 `var rule` 声明式形态，不支持 drpy2 的 ES Module 脚本。
 
 ## 🖥️ 安装
 
@@ -56,9 +57,10 @@ dotnet publish src\BaiYunBox\BaiYunBox.csproj -c Release -r win-x64 --self-conta
 
 - **UI**：.NET 8 WPF（`net8.0-windows`，自包含 `win-x64`，无需预装运行时）。
 - **播放内核**：libmpv（`libmpv-2.dll`，LGPL，P/Invoke 动态加载 + HwndHost 渲染）。
-- **存储**：JSON 配置文件（零第三方依赖）。
+- **JS 爬虫引擎**：Jint（纯托管 JS 引擎）+ AngleSharp（纯托管 HTML 解析），本地执行 dr_py 声明式爬虫。
+- **存储**：JSON 配置文件。
 - **网络/JSON/XML**：框架内置 HttpClient / System.Text.Json / XDocument。
-- **零 NuGet 依赖**：除随包内置的 libmpv 引擎外，无任何第三方 NuGet 包。
+- **依赖精简**：仅 Jint + AngleSharp 两个纯托管 NuGet 包（无任何 native 依赖），加随包内置的 libmpv 引擎。
 
 ## 📄 License
 

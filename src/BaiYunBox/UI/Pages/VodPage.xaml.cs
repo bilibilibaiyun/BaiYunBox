@@ -17,10 +17,23 @@ public partial class VodPage : UserControl
     private List<VodPlayLine> _lines = new();
     private List<VodEpisode> _currentEpisodes = new();
 
+    private int _loadedSiteCount = -1;
+
     public VodPage()
     {
         InitializeComponent();
-        Loaded += (_, _) => PopulateSites();
+        Loaded += (_, _) => RefreshIfNeeded();
+    }
+
+    /// <summary>切到点播页时刷新站点列表，站点变化时自动加载第一个站点。</summary>
+    public void RefreshIfNeeded()
+    {
+        var count = AppServices.Vod.Sites.Count;
+        if (count != _loadedSiteCount || SiteBox.Items.Count == 0)
+        {
+            PopulateSites();
+            _loadedSiteCount = count;
+        }
     }
 
     private void PopulateSites()
@@ -159,21 +172,40 @@ public partial class VodPage : UserControl
         }
     }
 
-    private void Episode_Click(object sender, RoutedEventArgs e)
+    private async void Episode_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is VodEpisode ep)
         {
-            PlayEpisode(ep);
+            await PlayEpisodeAsync(ep);
         }
     }
 
-    private void PlayEpisode(VodEpisode ep)
+    private async Task PlayEpisodeAsync(VodEpisode ep)
     {
         var title = $"{_currentDetail?.Name} {ep.Title}";
-        var key = HistoryService.BuildKey(ep.Url);
+        var url = ep.Url;
+
+        // js 爬虫源：先解析播放地址（flag=线路名，id=播放标识）
+        if (_currentSite is { Type: 3 })
+        {
+            try
+            {
+                var lineName = LineBox.SelectedIndex >= 0 && LineBox.SelectedIndex < _lines.Count
+                    ? _lines[LineBox.SelectedIndex].Name : "";
+                url = await AppServices.Vod.ResolvePlayUrlAsync(_currentSite, lineName, ep.Url);
+                if (string.IsNullOrEmpty(url)) url = ep.Url;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("解析播放地址失败：" + ex.Message, "BaiYun Box", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+        }
+
+        var key = HistoryService.BuildKey(url);
         var pos = AppServices.History.GetPosition(key);
         var win = Window.GetWindow(this) as MainWindow;
-        win?.Play(title, ep.Url, pos, key);
+        win?.Play(title, url, pos, key);
     }
 
     private void Back_Click(object sender, RoutedEventArgs e)

@@ -1,17 +1,19 @@
 using System.Net.Http;
 using System.Text.Json;
 using BaiYunBox.Core;
+using BaiYunBox.Crawler;
 using BaiYunBox.Models;
 
 namespace BaiYunBox.Services;
 
 /// <summary>
-/// 点播服务：加载 TVBox 源、CMS JSON API 分类/列表/搜索/详情、播放线路解析。
+/// 点播服务：加载 TVBox 源、按站点类型分流（CMS JSON / JS 爬虫）、播放线路解析。
 /// 支持 TVBox 单线路源（顶层 sites）与 FongMi 多线路源（storeHouse → 子源）。
 /// </summary>
 public sealed class VodService
 {
     private static readonly HttpClient Http = CreateHttpClient();
+    private readonly Dictionary<string, JsCrawler> _crawlers = new();
 
     private static HttpClient CreateHttpClient()
     {
@@ -28,13 +30,14 @@ public sealed class VodService
     public async Task LoadSourceAsync(string sourceUrl)
     {
         var json = await Http.GetStringAsync(sourceUrl);
-        LoadSourceFromJson(json);
+        LoadSourceFromJson(json, sourceUrl);
     }
 
-    private void LoadSourceFromJson(string json)
+    private void LoadSourceFromJson(string json, string? baseUrl = null)
     {
         var source = JsonSerializer.Deserialize<TvBoxSource>(json);
-        if (source == null) return;
+        if (source == null)
+            throw new InvalidOperationException("源格式无法解析（不是有效的 TVBox JSON）");
 
         var sites = new List<TvBoxSite>();
 
@@ -57,8 +60,65 @@ public sealed class VodService
             }
         }
 
-        if (sites.Count > 0)
-            Sites = sites;
+        // 解析相对路径（js 源的 api/ext 常是 ./js/xxx.js）
+        foreach (var s in sites)
+        {
+            s.Api = ResolveRelativeUrl(baseUrl, s.Api);
+            if (!string.IsNullOrEmpty(s.Ext)) s.Ext = ResolveRelativeUrl(baseUrl, s.Ext);
+        }
+
+        // 桌面端支持：type=1 CMS + type=3 JS 爬虫（dr_py / FongMi js0 声明式）。
+        // csp_ JAR（安卓 dex）与 type=0（xpath）不支持。
+        var supported = sites.Where(s => s.Type == 1 || IsJsSite(s)).ToList();
+        if (supported.Count == 0)
+        {
+            throw new InvalidOperationException(
+                "该源不含可用的点播站点。\n\n桌面端支持两类站点：\n" +
+                "· 苹果 CMS 采集源（type=1，api 形如 http://…/api.php/provide/vod/）\n" +
+                "· JS 爬虫源（type=3，api 指向 .js 声明式爬虫）\n\n" +
+                "源内若全是 csp_ JAR 爬虫（安卓专用，Windows 无法运行）或 xpath，则无法使用。");
+        }
+
+        Sites = supported;
+        _crawlers.Clear();
+    }
+
+    private static bool IsJsSite(TvBoxSite s)
+    {
+        if (s.Type != 3) return false;
+        if (s.Api.StartsWith("csp_", StringComparison.OrdinalIgnoreCase)) return false;
+        var api = s.Api.ToLowerInvariant();
+        var ext = s.Ext?.ToLowerInvariant() ?? "";
+        return api.EndsWith(".js") || ext.EndsWith(".js");
+    }
+
+    private static string ResolveRelativeUrl(string? baseUrl, string path)
+    {
+        if (string.IsNullOrEmpty(path)) return path;
+        if (path.StartsWith("http://") || path.StartsWith("https://")) return path;
+        if (string.IsNullOrEmpty(baseUrl)) return path;
+        try
+        {
+            return new Uri(new Uri(baseUrl), path).ToString();
+        }
+        catch
+        {
+            return path;
+        }
+    }
+
+    private async Task<JsCrawler> GetCrawlerAsync(TvBoxSite site)
+    {
+        var key = site.Key + "|" + site.LineName;
+        if (_crawlers.TryGetValue(key, out var existing)) return existing;
+
+        var crawler = new JsCrawler();
+        // 优先 ext（dr_py 新式的爬虫脚本），否则 api
+        var scriptUrl = !string.IsNullOrEmpty(site.Ext) && site.Ext.EndsWith(".js", StringComparison.OrdinalIgnoreCase)
+            ? site.Ext : site.Api;
+        await crawler.LoadFromUrlAsync(scriptUrl);
+        _crawlers[key] = crawler;
+        return crawler;
     }
 
     private async Task<List<TvBoxSite>> TryLoadSubSource(string url)
@@ -93,6 +153,12 @@ public sealed class VodService
     /// <summary>获取站点分类列表。</summary>
     public async Task<List<VodCategory>> GetCategoriesAsync(TvBoxSite site)
     {
+        if (site.Type == 3)
+        {
+            var crawler = await GetCrawlerAsync(site);
+            var classes = await Task.Run(crawler.Classes);
+            return classes.Select(c => new VodCategory { TypeId = c.TypeId, TypeName = c.TypeName }).ToList();
+        }
         var url = BuildApi(site.Api, "class");
         var resp = await GetJsonAsync<CmsListResponse>(url);
         return resp?.Class ?? new List<VodCategory>();
@@ -101,6 +167,12 @@ public sealed class VodService
     /// <summary>获取分类下的点播列表。</summary>
     public async Task<(List<VodItem> items, int pageCount)> GetListAsync(TvBoxSite site, string typeId, int page = 1)
     {
+        if (site.Type == 3)
+        {
+            var crawler = await GetCrawlerAsync(site);
+            var vods = await Task.Run(() => crawler.Category(typeId, page));
+            return (vods.Select(ToVodItem).ToList(), 1);
+        }
         var url = BuildApi(site.Api, "videolist", $"t={Uri.EscapeDataString(typeId)}&pg={page}");
         var resp = await GetJsonAsync<CmsListResponse>(url);
         return (resp?.List ?? new List<VodItem>(), resp?.PageCount ?? 1);
@@ -109,6 +181,12 @@ public sealed class VodService
     /// <summary>全站搜索。</summary>
     public async Task<List<VodItem>> SearchAsync(TvBoxSite site, string keyword)
     {
+        if (site.Type == 3)
+        {
+            var crawler = await GetCrawlerAsync(site);
+            var vods = await Task.Run(() => crawler.Search(keyword));
+            return vods.Select(ToVodItem).ToList();
+        }
         var url = BuildApi(site.Api, "videolist", $"wd={Uri.EscapeDataString(keyword)}");
         var resp = await GetJsonAsync<CmsListResponse>(url);
         return resp?.List ?? new List<VodItem>();
@@ -117,10 +195,48 @@ public sealed class VodService
     /// <summary>获取详情（含剧集与线路）。</summary>
     public async Task<VodItem?> GetDetailAsync(TvBoxSite site, string vodId)
     {
+        if (site.Type == 3)
+        {
+            var crawler = await GetCrawlerAsync(site);
+            var detail = await Task.Run(() => crawler.Detail(vodId));
+            return ToVodDetail(detail);
+        }
         var url = BuildApi(site.Api, "videolist", $"ids={Uri.EscapeDataString(vodId)}");
         var resp = await GetJsonAsync<CmsListResponse>(url);
         return resp?.List?.FirstOrDefault();
     }
+
+    /// <summary>解析播放地址（仅 js 爬虫源需要；CMS 源返回原地址）。</summary>
+    public async Task<string> ResolvePlayUrlAsync(TvBoxSite site, string flag, string id)
+    {
+        if (site.Type != 3) return id;
+        var crawler = await GetCrawlerAsync(site);
+        return await Task.Run(() => crawler.Play(flag, id));
+    }
+
+    private static VodItem ToVodItem(CrawlerVod v) => new()
+    {
+        VodId = v.VodId,
+        Name = v.VodName,
+        Pic = v.VodPic,
+        TypeName = v.TypeName,
+        Remarks = v.VodRemarks,
+        Content = v.VodContent,
+    };
+
+    private static VodItem ToVodDetail(CrawlerDetail d) => new()
+    {
+        VodId = d.VodId,
+        Name = d.VodName,
+        Pic = d.VodPic,
+        TypeName = d.TypeName,
+        Remarks = d.VodRemarks,
+        Content = d.VodContent,
+        Year = d.VodYear,
+        Area = d.VodArea,
+        PlayFrom = d.VodPlayFrom,
+        PlayUrl = d.VodPlayUrl,
+    };
 
     private async Task<T?> GetJsonAsync<T>(string url)
     {

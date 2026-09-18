@@ -12,16 +12,20 @@
     <PublishSingleFile>false</PublishSingleFile>
     <AssemblyName>BaiYunBox</AssemblyName>
     <RootNamespace>BaiYunBox</RootNamespace>
-    <Version>1.0.2</Version>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
+    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <SatelliteResourceLanguages>zh-CN;en-US</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- 无第三方 NuGet 依赖：libmpv 通过 P/Invoke，whisper.cpp 通过子进程，网络/JSON/XML 用框架内置 -->
+    <!-- JS 爬虫（dr_py 声明式 rule）支持：Jint 纯托管 JS 引擎 + AngleSharp 纯托管 HTML 解析。
+         两者均为 managed 程序集，无 native 依赖，保持轻量。 -->
+    <PackageReference Include="Jint" Version="4.3.0" />
+    <PackageReference Include="AngleSharp" Version="1.2.0" />
+    <!-- 只用 WinForms 的 NotifyIcon/FolderBrowserDialog，移除其 implicit using 以避免与 WPF 控件类型歧义 -->
     <Using Remove="System.Windows.Forms" />
     <Using Include="System.IO" />
     <Using Include="System.Net.Http" />

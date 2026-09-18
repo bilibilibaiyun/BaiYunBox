@@ -39,6 +39,9 @@ public sealed class TvBoxSite
     [JsonPropertyName("api")]
     public string Api { get; set; } = "";
 
+    [JsonPropertyName("ext")]
+    public string? Ext { get; set; }
+
     [JsonPropertyName("searchable")]
     public int Searchable { get; set; } = 1;
 

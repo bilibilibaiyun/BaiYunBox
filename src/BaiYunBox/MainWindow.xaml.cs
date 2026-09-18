@@ -28,9 +28,11 @@ public partial class MainWindow : Window
         // 切换到对应页时触发刷新
         switch (tag)
         {
-            case "4": HomePageControl.Refresh(); break;
+            case "0": VodPageControl.RefreshIfNeeded(); break;
+            case "1": LivePageControl.RefreshIfNeeded(); break;
             case "2": LibraryPageControl.RefreshIfNeeded(); break;
             case "3": PodcastPageControl.RefreshIfNeeded(); break;
+            case "4": HomePageControl.Refresh(); break;
         }
     }
 

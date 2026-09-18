@@ -93,25 +93,28 @@ public partial class SettingsPage : UserControl
     {
         var url = VodSourceBox.Text.Trim();
         if (string.IsNullOrEmpty(url)) return;
-        if (!AppServices.Settings.VodSources.Contains(url))
+        if (AppServices.Settings.VodSources.Contains(url))
         {
+            MessageBox.Show("该点播源已存在。", "BaiYun Box", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        // 先加载验证，成功才保存
+        try
+        {
+            await AppServices.Vod.LoadSourceAsync(url);
             AppServices.Settings.VodSources.Add(url);
-            VodSourceBox.Clear();
+            AppServices.Settings.ActiveVodSource = AppServices.Settings.VodSources.Count - 1;
             AppServices.SaveSettings();
+            VodSourceBox.Clear();
             VodSourceList.ItemsSource = null;
             VodSourceList.ItemsSource = AppServices.Settings.VodSources;
-
-            // 立即加载
-            try
-            {
-                await AppServices.Vod.LoadSourceAsync(url);
-                AppServices.Settings.ActiveVodSource = AppServices.Settings.VodSources.Count - 1;
-                AppServices.SaveSettings();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("加载点播源失败：" + ex.Message, "BaiYun Box", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            MessageBox.Show($"点播源加载成功，共 {AppServices.Vod.Sites.Count} 个站点。",
+                "BaiYun Box", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("加载点播源失败：" + ex.Message, "BaiYun Box", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -151,7 +154,7 @@ public partial class SettingsPage : UserControl
 
     // ---------- 直播源 ----------
 
-    private void AddLiveSource_Click(object sender, RoutedEventArgs e)
+    private async void AddLiveSource_Click(object sender, RoutedEventArgs e)
     {
         var url = LiveSourceBox.Text.Trim();
         if (string.IsNullOrEmpty(url)) return;
@@ -162,6 +165,20 @@ public partial class SettingsPage : UserControl
             AppServices.SaveSettings();
             LiveSourceList.ItemsSource = null;
             LiveSourceList.ItemsSource = AppServices.Settings.LiveSources;
+
+            // 立即验证并设为当前源
+            try
+            {
+                var groups = await AppServices.Live.LoadAsync(url);
+                AppServices.Settings.ActiveLiveSource = AppServices.Settings.LiveSources.Count - 1;
+                AppServices.SaveSettings();
+                MessageBox.Show($"直播源加载成功，共 {groups.Sum(g => g.Channels.Count)} 个频道。",
+                    "BaiYun Box", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("加载直播源失败：" + ex.Message, "BaiYun Box", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 

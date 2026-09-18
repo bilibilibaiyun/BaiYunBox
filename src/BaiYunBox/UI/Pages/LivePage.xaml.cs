@@ -9,11 +9,23 @@ namespace BaiYunBox.UI.Pages;
 public partial class LivePage : UserControl
 {
     private List<LiveGroup> _groups = new();
+    private bool _loaded;
 
     public LivePage()
     {
         InitializeComponent();
-        Loaded += (_, _) => PopulateSources();
+        Loaded += (_, _) => RefreshIfNeeded();
+    }
+
+    /// <summary>切到直播页时刷新源列表，首次自动加载频道。</summary>
+    public void RefreshIfNeeded()
+    {
+        PopulateSources();
+        if (!_loaded && SourceBox.Items.Count > 0)
+        {
+            _loaded = true;
+            _ = LoadSelectedAsync();
+        }
     }
 
     private void PopulateSources()
@@ -28,7 +40,9 @@ public partial class LivePage : UserControl
         }
     }
 
-    private async void Load_Click(object sender, RoutedEventArgs e)
+    private async void Load_Click(object sender, RoutedEventArgs e) => await LoadSelectedAsync();
+
+    private async Task LoadSelectedAsync()
     {
         if (SourceBox.SelectedItem is not string source) return;
         StatusText.Text = "加载中…";

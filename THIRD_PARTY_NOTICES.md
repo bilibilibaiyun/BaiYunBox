@@ -20,6 +20,18 @@ BaiYun Box 随安装包分发以下第三方开源组件。各组件版权归其
 - 许可：LGPL（本分发使用 LGPL 构建，不含 GPL-only 组件）。
 - 说明：随上述 LGPL 版 libmpv 静态链接提供。
 
+## 3. Jint
+
+- 项目：https://github.com/sebastienros/jint
+- 用途：本地 JavaScript 引擎，执行 dr_py / FongMi js0 声明式爬虫。
+- 许可：BSD 2-Clause License。
+
+## 4. AngleSharp
+
+- 项目：https://github.com/AngleSharp/AngleSharp
+- 用途：HTML 解析与 CSS 选择器，供 JS 爬虫的声明式规则提取使用。
+- 许可：MIT License。
+
 ## 免责声明
 
 BaiYun Box 不提供任何影视/直播/播客内容，所有播放源由用户自行配置。
